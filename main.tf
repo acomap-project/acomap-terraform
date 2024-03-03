@@ -1,3 +1,9 @@
+variable "aws_region" {
+  description = "The AWS region to deploy resources."
+  type        = string
+  default     = "ap-southeast-1"
+}
+
 terraform {
   required_providers {
     aws = {
@@ -10,11 +16,18 @@ terraform {
 }
 
 provider "aws" {
-  region = "ap-southeast-1"
+  region = var.aws_region
+}
+
+module "common" {
+  source = "./modules/_common"
 }
 
 module "accom" {
   source = "./modules/accommodation-service"
+  api_gateway_id = module.common.acomap_project_api_id
+  api_gateway_root_resource_id = module.common.acomap_project_api_root_resource_id
+  api_gateway_execution_arn = module.common.acomap_project_api_execution_arn
 }
 
 module "acomap-client-web-app" {
