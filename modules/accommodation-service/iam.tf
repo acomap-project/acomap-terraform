@@ -42,7 +42,8 @@ resource "aws_iam_role" "accom_management_function_role" {
   // add managed policy for lambda
   managed_policy_arns = [
     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-    "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+    "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
+    "arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole"
   ]
 
   tags = {

@@ -30,6 +30,11 @@ module "accom" {
   api_gateway_execution_arn = module.common.acomap_project_api_execution_arn
 }
 
+module "crawl-service" {
+  source = "./modules/crawl-service"
+  accom_service_sqs_url = module.accom.accommodation_queue_url
+}
+
 module "acomap-client-web-app" {
   source = "./modules/acomap-client-web-app"
 }

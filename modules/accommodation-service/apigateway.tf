@@ -83,12 +83,80 @@ resource "aws_api_gateway_integration_response" "accommodations_get_lambda_respo
   }
 }
 
+
+resource "aws_api_gateway_method" "accommodations_options" {
+  rest_api_id   = var.api_gateway_id
+  resource_id   = aws_api_gateway_resource.accommodations.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "accommodations_options" {
+  depends_on   = [aws_api_gateway_method.accommodations_options]
+  rest_api_id  = var.api_gateway_id
+  resource_id  = aws_api_gateway_resource.accommodations.id
+  http_method  = aws_api_gateway_method.accommodations_options.http_method
+  integration_http_method = "OPTIONS"
+  type         = "MOCK"
+  request_templates = {
+    "application/json" = <<EOF
+    {
+      "statusCode": 200,
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS, GET",
+        "Access-Control-Allow-Headers": "Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token, X-Amz-User-Agent"
+      }
+    }
+    EOF
+  }
+}
+
+resource "aws_api_gateway_method_response" "accommodations_options_response" {
+  depends_on    = [aws_api_gateway_integration.accommodations_options]
+  rest_api_id   = var.api_gateway_id
+  resource_id   = aws_api_gateway_resource.accommodations.id
+  http_method   = aws_api_gateway_method.accommodations_options.http_method
+  status_code   = "200"
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin" = true
+    "method.response.header.Access-Control-Allow-Methods" = true
+    "method.response.header.Access-Control-Allow-Headers" = true
+  }
+}
+
+resource "aws_api_gateway_integration_response" "accommodations_options_response" {
+  depends_on              = [aws_api_gateway_integration.accommodations_options]
+  rest_api_id             = var.api_gateway_id
+  resource_id             = aws_api_gateway_resource.accommodations.id
+  http_method             = aws_api_gateway_method.accommodations_options.http_method
+  status_code             = "200"
+  response_templates      = {
+    "application/json" = ""
+  }
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin" = "'*'"
+    "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS, GET'"
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token, X-Amz-User-Agent'"
+  }
+}
+
 resource "aws_api_gateway_deployment" "accommodations_deployment" {
-  depends_on  = [aws_api_gateway_integration.accommodations_get_lambda]
+  depends_on  = [
+    aws_api_gateway_integration.accommodations_get_lambda,
+    aws_api_gateway_integration.accommodations_options
+  ]
   rest_api_id = var.api_gateway_id
   stage_name  = "dev"
   triggers = {
-    redeployment = sha1(jsonencode(aws_api_gateway_integration.accommodations_get_lambda))
+    redeployment = sha1(
+      jsonencode(
+        merge(
+          aws_api_gateway_integration.accommodations_get_lambda,
+          aws_api_gateway_integration.accommodations_options
+        )
+      )
+    )
   }
   lifecycle {
     create_before_destroy = true
