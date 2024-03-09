@@ -44,7 +44,19 @@ resource "aws_sfn_state_machine" "crawl-workflow" {
                 "BackoffRate": 2
               }
             ],
-            "Next": "Assign Location"
+            "Next": "Assign Location",
+            "Catch": [
+              {
+                "ErrorEquals": [
+                  "States.TaskFailed"
+                ],
+                "Next": "Cannot crawl accommodation"
+              }
+            ]
+          },
+          "Cannot crawl accommodation": {
+            "Type": "Pass",
+            "End": true
           },
           "Assign Location": {
             "Type": "Task",
@@ -67,6 +79,18 @@ resource "aws_sfn_state_machine" "crawl-workflow" {
                 "BackoffRate": 2
               }
             ],
+            "Next": "Map each accommodation",
+            "Catch": [
+              {
+                "ErrorEquals": [
+                  "States.TaskFailed"
+                ],
+                "Next": "Cannot assign coordination"
+              }
+            ]
+          },
+          "Cannot assign coordination": {
+            "Type": "Pass",
             "Next": "Map each accommodation"
           },
           "Map each accommodation": {
