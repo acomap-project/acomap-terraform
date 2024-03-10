@@ -24,19 +24,19 @@ resource "aws_scheduler_schedule" "crawl-scheduler" {
           "city" : "Hồ Chí Minh",
           "district" : "Quận Bình Thạnh",
           "city_code" : "ho-chi-minh",
-          "district_code" : "binh-thanh"
+          "district_code" : "quan-binh-thanh"
         },
         {
           "city" : "Hồ Chí Minh",
           "district" : "Quận Thủ Đức",
           "city_code" : "ho-chi-minh",
-          "district_code" : "thu-duc"
+          "district_code" : "quan-thu-duc"
         },
         {
           "city" : "Hồ Chí Minh",
           "district" : "Quận Phú Nhuận",
           "city_code" : "ho-chi-minh",
-          "district_code" : "phu-nhuan"
+          "district_code" : "quan-phu-nhuan"
         },
         {
           "city" : "Hồ Chí Minh",
