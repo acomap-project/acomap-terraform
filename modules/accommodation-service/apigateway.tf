@@ -96,20 +96,7 @@ resource "aws_api_gateway_integration" "accommodations_options" {
   rest_api_id  = var.api_gateway_id
   resource_id  = aws_api_gateway_resource.accommodations.id
   http_method  = aws_api_gateway_method.accommodations_options.http_method
-  integration_http_method = "OPTIONS"
   type         = "MOCK"
-  request_templates = {
-    "application/json" = <<EOF
-    {
-      "statusCode": 200,
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "OPTIONS, GET",
-        "Access-Control-Allow-Headers": "Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token, X-Amz-User-Agent"
-      }
-    }
-    EOF
-  }
 }
 
 resource "aws_api_gateway_method_response" "accommodations_options_response" {
