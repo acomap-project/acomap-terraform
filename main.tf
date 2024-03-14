@@ -33,6 +33,7 @@ module "accom" {
 module "crawl-service" {
   source = "./modules/crawl-service"
   accom_service_sqs_url = module.accom.accommodation_queue_url
+  accom_service_sqs_arn = module.accom.accommodation_queue_arn
 }
 
 module "acomap-client-web-app" {

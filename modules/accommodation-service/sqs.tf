@@ -10,3 +10,7 @@ resource "aws_sqs_queue" "acom_queue" {
 output "accommodation_queue_url" {
     value = aws_sqs_queue.acom_queue.url
 }
+
+output "accommodation_queue_arn" {
+    value = aws_sqs_queue.acom_queue.arn
+}

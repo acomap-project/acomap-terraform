@@ -1,3 +1,7 @@
+variable "accom_service_sqs_arn" {
+  description = "SQS ARN to send the message to accommodation service"
+  type        = string
+}
 resource "aws_iam_role" "lambda-function-role" {
   name = "CRAWL_lambda-function-role"
   assume_role_policy = jsonencode({
@@ -17,8 +21,47 @@ resource "aws_iam_role" "lambda-function-role" {
     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
   ]
 
+  inline_policy {
+    name = "DynamoDBReadWritePolicy"
+
+    policy = jsonencode({
+      Version   = "2012-10-17",
+      Statement = [
+        {
+          Sid       = "AllowDynamoDBReadWrite",
+          Effect    = "Allow",
+          Action    = [
+            "dynamodb:GetItem",
+            "dynamodb:PutItem",
+            "dynamodb:UpdateItem",
+            "dynamodb:DeleteItem"
+          ],
+          Resource  = "${aws_dynamodb_table.raw_accom.arn}"
+        }
+      ]
+    })
+  }
+
+  inline_policy {
+    name = "SQSSendMessagePolicy"
+
+    policy = jsonencode({
+      Version   = "2012-10-17",
+      Statement = [
+        {
+          Sid       = "AllowSQSSendMessage",
+          Effect    = "Allow",
+          Action    = [
+            "sqs:SendMessage"
+          ],
+          Resource  = "${var.accom_service_sqs_arn}"
+        }
+      ]
+    })
+  }
+
   tags = {
-    Service = "ACCOM"
+    Service = "CRAWL"
     Project = "acomap-project"
   }
 }

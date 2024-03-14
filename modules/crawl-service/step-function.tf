@@ -44,7 +44,7 @@ resource "aws_sfn_state_machine" "crawl-workflow" {
                 "BackoffRate": 2
               }
             ],
-            "Next": "Assign Location",
+            "Next": "Map each accommodation",
             "Catch": [
               {
                 "ErrorEquals": [
@@ -58,50 +58,51 @@ resource "aws_sfn_state_machine" "crawl-workflow" {
             "Type": "Pass",
             "End": true
           },
-          "Assign Location": {
-            "Type": "Task",
-            "Resource": "arn:aws:states:::lambda:invoke",
-            "OutputPath": "$.Payload",
-            "Parameters": {
-              "Payload.$": "$",
-              "FunctionName": "${aws_lambda_function.map-function.arn}"
-            },
-            "Retry": [
-              {
-                "ErrorEquals": [
-                  "Lambda.ServiceException",
-                  "Lambda.AWSLambdaException",
-                  "Lambda.SdkClientException",
-                  "Lambda.TooManyRequestsException"
-                ],
-                "IntervalSeconds": 1,
-                "MaxAttempts": 3,
-                "BackoffRate": 2
-              }
-            ],
-            "Next": "Map each accommodation",
-            "Catch": [
-              {
-                "ErrorEquals": [
-                  "States.TaskFailed"
-                ],
-                "Next": "Cannot assign coordination"
-              }
-            ]
-          },
-          "Cannot assign coordination": {
-            "Type": "Pass",
-            "Next": "Map each accommodation"
-          },
           "Map each accommodation": {
             "Type": "Map",
             "ItemProcessor": {
               "ProcessorConfig": {
                 "Mode": "INLINE"
               },
-              "StartAt": "SQS SendMessage",
+              "StartAt": "Choice",
               "States": {
-                "SQS SendMessage": {
+                "Choice": {
+                  "Type": "Choice",
+                  "Choices": [
+                    {
+                      "Variable": "$.isLocationResolved",
+                      "BooleanEquals": false,
+                      "Next": "Save raw accom"
+                    }
+                  ],
+                  "Default": "Save resolved accom"
+                },
+                "Save raw accom": {
+                  "Type": "Task",
+                  "Resource": "arn:aws:states:::lambda:invoke",
+                  "OutputPath": "$.Payload",
+                  "Parameters": {
+                    "FunctionName": "${aws_lambda_function.raw-accom-function.arn}",
+                    "Payload": {
+                      "accom.$": "$"
+                    }
+                  },
+                  "Retry": [
+                    {
+                      "ErrorEquals": [
+                        "Lambda.ServiceException",
+                        "Lambda.AWSLambdaException",
+                        "Lambda.SdkClientException",
+                        "Lambda.TooManyRequestsException"
+                      ],
+                      "IntervalSeconds": 1,
+                      "MaxAttempts": 3,
+                      "BackoffRate": 2
+                    }
+                  ],
+                  "End": true
+                },
+                "Save resolved accom": {
                   "Type": "Task",
                   "Resource": "arn:aws:states:::sqs:sendMessage",
                   "Parameters": {
