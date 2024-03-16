@@ -34,6 +34,9 @@ module "crawl-service" {
   source = "./modules/crawl-service"
   accom_service_sqs_url = module.accom.accommodation_queue_url
   accom_service_sqs_arn = module.accom.accommodation_queue_arn
+  api_gateway_id = module.common.acomap_project_api_id
+  api_gateway_root_resource_id = module.common.acomap_project_api_root_resource_id
+  api_gateway_execution_arn = module.common.acomap_project_api_execution_arn
 }
 
 module "acomap-client-web-app" {

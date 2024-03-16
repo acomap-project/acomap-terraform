@@ -1,7 +1,4 @@
-variable "accom_service_sqs_url" {
-    description = "SQS ARN to send the message to accommodation service"
-    type        = string
-}
+
 
 resource "aws_sfn_state_machine" "crawl-workflow" {
     name     = "CRAWL_crawl-workflow"

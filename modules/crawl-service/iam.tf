@@ -1,7 +1,3 @@
-variable "accom_service_sqs_arn" {
-  description = "SQS ARN to send the message to accommodation service"
-  type        = string
-}
 resource "aws_iam_role" "lambda-function-role" {
   name = "CRAWL_lambda-function-role"
   assume_role_policy = jsonencode({

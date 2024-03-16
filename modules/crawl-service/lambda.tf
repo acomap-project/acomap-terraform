@@ -82,6 +82,14 @@ resource "aws_lambda_permission" "raw-accom-permission" {
   source_arn    = aws_sfn_state_machine.crawl-workflow.arn
 }
 
+resource "aws_lambda_permission" "raw-accom-apigateway-permission" {
+  statement_id  = "AllowExecutionFromApiGateway_CRAWL_raw-accom-function"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.raw-accom-function.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${var.api_gateway_execution_arn}/*"
+}
+
 output "lambda_function_arns" {
   value = [
     aws_lambda_function.crawl-function.arn,
