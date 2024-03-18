@@ -22,39 +22,39 @@ resource "aws_scheduler_schedule" "crawl-scheduler" {
       "area_list" : [
         {
           "city" : "Hồ Chí Minh",
-          "district" : "Quận Bình Thạnh",
+          "area" : "Quận Bình Thạnh",
           "city_code" : "ho-chi-minh",
-          "district_code" : "quan-binh-thanh"
+          "area_code" : "quan-binh-thanh"
         },
         {
           "city" : "Hồ Chí Minh",
-          "district" : "Quận Thủ Đức",
+          "area" : "Quận Thủ Đức",
           "city_code" : "ho-chi-minh",
-          "district_code" : "quan-thu-duc"
+          "area_code" : "quan-thu-duc"
         },
         {
           "city" : "Hồ Chí Minh",
-          "district" : "Quận Phú Nhuận",
+          "area" : "Quận Phú Nhuận",
           "city_code" : "ho-chi-minh",
-          "district_code" : "quan-phu-nhuan"
+          "area_code" : "quan-phu-nhuan"
         },
         {
           "city" : "Hồ Chí Minh",
-          "district" : "Quận 1",
+          "area" : "Quận 1",
           "city_code" : "ho-chi-minh",
-          "district_code" : "quan-1"
+          "area_code" : "quan-1"
         },
         {
           "city" : "Hồ Chí Minh",
-          "district" : "Quận 4",
+          "area" : "Quận 4",
           "city_code" : "ho-chi-minh",
-          "district_code" : "quan-4"
+          "area_code" : "quan-4"
         },
         {
           "city" : "Hồ Chí Minh",
-          "district" : "Quận 10",
+          "area" : "Quận 10",
           "city_code" : "ho-chi-minh",
-          "district_code" : "quan-10"
+          "area_code" : "quan-10"
         }
       ]
     })

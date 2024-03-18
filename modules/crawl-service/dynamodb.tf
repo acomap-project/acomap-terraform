@@ -11,6 +11,11 @@ resource "aws_dynamodb_table" "raw_accom" {
     type = "S"
   }
 
+  ttl {
+    attribute_name = "expiredAt"
+    enabled = true
+  }
+
   tags = {
     Service = "CRAWL"
     Project = "acomap-project"

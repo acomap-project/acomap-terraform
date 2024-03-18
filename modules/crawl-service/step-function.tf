@@ -81,6 +81,7 @@ resource "aws_sfn_state_machine" "crawl-workflow" {
                   "Parameters": {
                     "FunctionName": "${aws_lambda_function.raw-accom-function.arn}",
                     "Payload": {
+                      "type": "step-function",
                       "accom.$": "$"
                     }
                   },

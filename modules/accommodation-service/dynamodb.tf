@@ -17,22 +17,28 @@ resource "aws_dynamodb_table" "accommodation" {
   }
 
   attribute {
-    name = "price"
-    type = "N"
+    name = "cityCode"
+    type = "S"
   }
+
   attribute {
-    name = "publishedDate"
+    name = "areaCode"
     type = "S"
   }
 
   global_secondary_index {
-    hash_key           = "publishedDate"
-    name               = "publishedDate-price-index"
+    hash_key           = "cityCode"
+    range_key          = "areaCode"
+    name               = "city_code-area_code-index"
     non_key_attributes = []
     projection_type    = "ALL"
-    range_key          = "price"
     read_capacity      = 4
     write_capacity     = 1
+  }
+
+  ttl {
+    attribute_name = "expiredAt"
+    enabled = true
   }
 
   tags = {
